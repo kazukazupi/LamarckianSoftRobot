@@ -76,3 +76,15 @@ class Individual:
     @property
     def generation(self):
         return self.info.generation
+
+    @property
+    def parents_id(self):
+        return self.info.parents_id
+
+    @property
+    def fitness(self):
+        return self.info.fitness
+
+    @property
+    def crossover_info(self):
+        return self.info.crossover_info
