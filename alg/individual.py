@@ -1,4 +1,3 @@
-import json
 from pathlib import Path
 from typing import Literal, NamedTuple, Optional, Tuple, Union
 
@@ -29,7 +28,6 @@ class IndividualInfo(BaseModel):
     id_: int
     generation: int
     parents_id: Optional[Union[Tuple[int], Tuple[int, int]]]
-    learning_en: bool
     fitness: Optional[float]
     crossover_info: Optional[CrossoverInfo]
 
@@ -42,7 +40,6 @@ class Individual:
         robot_shape: Tuple[int, int],
         generation: int,
         parents_id: Optional[Union[Tuple[int], Tuple[int, int]]] = None,
-        learning_en: bool = True,
         fitness: Optional[float] = None,
         crossover_info: Optional[CrossoverInfo] = None,
     ):
@@ -52,7 +49,6 @@ class Individual:
         self.generation = generation
         self.structure = Structure(*sample_robot(robot_shape))
         self.parents_id = parents_id
-        self.learning_en = learning_en
         self.fitness = fitness
         self.crossover_info = crossover_info
 
@@ -72,7 +68,6 @@ class Individual:
             id_=self.id_,
             generation=self.generation,
             parents_id=self.parents_id,
-            learning_en=self.learning_en,
             fitness=self.fitness,
             crossover_info=self.crossover_info,
         )
