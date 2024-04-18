@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Literal, NamedTuple, Optional, Tuple, Union
 
 import numpy as np
-from evogym import sample_robot  # type: ignore
+from evogym import hashable, sample_robot  # type: ignore
 from pydantic import BaseModel
 
 BODY_FILE_NAME = "body.npy"
@@ -67,17 +67,21 @@ class Individual:
         with open(self.saving_dir / JSON_FILE_NAME, "w") as fp:
             fp.write(self.info.model_dump_json(indent=3))
 
+    def reborn(self, robot_shape: Tuple[int, int]):
+        self.structure = Structure(*sample_robot(robot_shape))
+
     @classmethod
     def init_random(
         cls,
         id_: int,
         generation: int,
         robot_shape: Tuple[int, int],
+        generation_dir: Path,
     ):
 
         structure = Structure(*sample_robot(robot_shape))
         info = IndividualInfo(id_=id_, generation=generation)
-        saving_dir = Path(f"./experiment/generation{(generation):02}/id{(id_):02}")
+        saving_dir = generation_dir / f"id{(id_):02}"
 
         saving_dir.mkdir(parents=False, exist_ok=False)
 
@@ -114,3 +118,7 @@ class Individual:
     @property
     def crossover_info(self):
         return self.info.crossover_info
+
+    @property
+    def hash(self):
+        return hashable(self.structure.body)
