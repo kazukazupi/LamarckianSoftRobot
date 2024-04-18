@@ -45,12 +45,14 @@ class Individual:
     ):
 
         # initialize
-        self.id_ = id_
-        self.generation = generation
         self.structure = Structure(*sample_robot(robot_shape))
-        self.parents_id = parents_id
-        self.fitness = fitness
-        self.crossover_info = crossover_info
+        self.info = IndividualInfo(
+            id_=id_,
+            generation=generation,
+            parents_id=parents_id,
+            fitness=fitness,
+            crossover_info=crossover_info,
+        )
 
         # make directory to save information
         self.saving_dir = Path(
@@ -63,14 +65,14 @@ class Individual:
         # save structure
         self.structure.save(self.saving_dir)
 
-        # save information in robot_info.json
-        individual_info = IndividualInfo(
-            id_=self.id_,
-            generation=self.generation,
-            parents_id=self.parents_id,
-            fitness=self.fitness,
-            crossover_info=self.crossover_info,
-        )
-
+        # save robot info
         with open(self.saving_dir / JSON_FILE_NAME, "w") as fp:
-            fp.write(individual_info.model_dump_json(indent=3))
+            fp.write(self.info.model_dump_json(indent=3))
+
+    @property
+    def id_(self):
+        return self.info.id_
+
+    @property
+    def generation(self):
+        return self.info.generation
