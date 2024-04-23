@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from typing import Literal, Tuple
+from typing import Tuple
 
 import torch
 from pydantic import BaseModel
@@ -20,7 +20,7 @@ class Config(BaseModel):
     elite_rate_low: float
     non_inherit: bool
     print_en: bool
-    algo: Literal["a2c", "ppo", "acktr"]
+    algo: str  # Literal["a2c", "ppo", "acktr"]
     gail: bool
     gail_experts_dir: str
     gail_batch_size: int
@@ -288,4 +288,4 @@ class Config(BaseModel):
 
         # save parameter info
         with open(self.exp_dir / CONFIG_FILE_NAME, "w") as fp:
-            fp.write(self.model_dump_json(indent=3))
+            fp.write(self.json(indent=3))
