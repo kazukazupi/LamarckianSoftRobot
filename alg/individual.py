@@ -51,7 +51,7 @@ class Individual:
             fp.write(self.info.json(indent=3))
 
     def train(self, config: Config):
-        run_ppo(self.structure, self.saving_dir, config)
+        self.info.fitness = run_ppo(self.structure, self.saving_dir, config)
 
     def reborn(self, robot_shape: Tuple[int, int]):
         self.structure = Structure(*sample_robot(robot_shape))

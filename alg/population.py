@@ -1,3 +1,4 @@
+from enum import Enum, auto
 from typing import Dict, List
 
 from alg.config import Config
@@ -6,6 +7,11 @@ from alg.utils import FitnessWriter, LogWriter
 
 POP_TXT_FILE_NAME = "log.txt"
 POP_CSV_FILE_NAME = "fitness.csv"
+
+
+class EvolutionState(Enum):
+    CONTINUE = auto()
+    END = auto()
 
 
 class Population:
@@ -17,6 +23,7 @@ class Population:
         num_evals: int,
         log_writer: LogWriter,
         fitness_writer: FitnessWriter,
+        config: Config,
     ):
         """
         Args:
@@ -32,6 +39,7 @@ class Population:
         self.num_evals = num_evals
         self.log_writer = log_writer
         self.fitness_writer = fitness_writer
+        self.config = config
 
     @classmethod
     def initialize(cls):
@@ -80,8 +88,6 @@ class Population:
             individual.save()
             individual_list.append(individual)
 
-            num_evals += 1
-
         log_writer.print_and_write(f"initialized {config.population_size} robots.")
 
         population = cls(
@@ -91,6 +97,49 @@ class Population:
             num_evals,
             log_writer,
             fitness_writer,
+            config,
         )
 
         return population
+
+    def train(self) -> EvolutionState:
+        """
+        learning phase for the current generation (= self.generation)
+
+        Return:
+            whether the evolution has been finished or not
+        """
+
+        for individual in self.individual_list:
+
+            id_ = individual.id_
+
+            # skip training if robot has already learned
+            if individual.fitness is not None:
+                self.log_writer.print_and_write(
+                    f"skip training robot {id_} (parents: {individual.parents_id})."
+                )
+                continue
+
+            self.log_writer.print_and_write(
+                f"training robot {id_} (parents: {individual.parents_id})..."
+            )
+
+            # train and set fitness value
+            individual.train(self.config)
+            individual.save()
+
+            self.log_writer.print_and_write(
+                f"\tterminated. fitness: {individual.fitness}"
+            )
+
+            self.num_evals += 1
+
+            # end evolution
+            if self.num_evals == self.config.max_evaluations:
+                self.fitness_writer.write(self.generation, self.individual_list)
+                return EvolutionState.END
+
+        self.fitness_writer.write(self.generation, self.individual_list)
+
+        return EvolutionState.CONTINUE

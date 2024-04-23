@@ -1,5 +1,8 @@
 import csv
 from pathlib import Path
+from typing import List
+
+from alg.individual import Individual
 
 
 class LogWriter:
@@ -38,4 +41,13 @@ class FitnessWriter:
             row = ["i_generation"] + [f"id{id_}" for id_ in range(self.pop_size)]
             writer.writerow(row)
 
-    # def write(self):
+    def write(self, generation: int, individual_list: List[Individual]):
+
+        assert len(individual_list) == self.pop_size
+
+        with self.filepath.open(mode="a") as fd:
+            writer = csv.writer(fd)
+            row = [generation] + [
+                individual.info.fitness for individual in individual_list
+            ]
+            writer.writerow(row)
