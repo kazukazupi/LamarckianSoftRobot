@@ -1,37 +1,21 @@
 import json
 from pathlib import Path
-from typing import Literal, NamedTuple, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 import numpy as np
 from evogym import hashable, sample_robot  # type: ignore
 from pydantic import BaseModel
 
-BODY_FILE_NAME = "body.npy"
-CONNECTIONS_FILE_NAME = "connections.npy"
+from alg.config import Config
+from alg.ppo import run_ppo
+from alg.structure import Structure
+
 JSON_FILE_NAME = "robot_info.json"
 
 
 class CrossoverInfo(BaseModel):
-    axis: Literal[0, 1]
+    axis: int  # Literal[0, 1]
     mid: int
-
-
-class Structure(NamedTuple):
-    body: np.ndarray
-    connections: np.ndarray
-
-    def save(self, saving_dir: Path):
-        np.save(str(saving_dir / BODY_FILE_NAME), self.body)
-        np.save(str(saving_dir / CONNECTIONS_FILE_NAME), self.connections)
-
-    @staticmethod
-    def load(saving_dir: Path):
-
-        # load structure
-        body = np.load(str(saving_dir / BODY_FILE_NAME))
-        connections = np.load(str(saving_dir / CONNECTIONS_FILE_NAME))
-
-        return Structure(body, connections)
 
 
 class IndividualInfo(BaseModel):
@@ -43,7 +27,6 @@ class IndividualInfo(BaseModel):
 
 
 class Individual:
-
     def __init__(
         self,
         structure: Structure,
@@ -65,7 +48,10 @@ class Individual:
 
         # save robot info
         with open(self.saving_dir / JSON_FILE_NAME, "w") as fp:
-            fp.write(self.info.model_dump_json(indent=3))
+            fp.write(self.info.json(indent=3))
+
+    def train(self, config: Config):
+        run_ppo(self.structure, self.saving_dir, config)
 
     def reborn(self, robot_shape: Tuple[int, int]):
         self.structure = Structure(*sample_robot(robot_shape))

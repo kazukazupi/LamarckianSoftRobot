@@ -3,7 +3,6 @@ from alg.individual import Individual
 
 
 class Population:
-
     def __init__(self, individual_list, group_hashes, generation, num_evals):
 
         self.individual_list = individual_list
