@@ -1,3 +1,4 @@
 .mypy_cache
 example/*
 result/*
+__pycache__
