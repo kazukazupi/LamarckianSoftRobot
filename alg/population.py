@@ -1,9 +1,24 @@
+from typing import Dict, List
+
 from alg.config import Config
 from alg.individual import Individual
 
 
 class Population:
-    def __init__(self, individual_list, group_hashes, generation, num_evals):
+    def __init__(
+        self,
+        individual_list: List[Individual],
+        group_hashes: Dict[str, bool],
+        generation: int,
+        num_evals: int,
+    ):
+        """
+        Args:
+            individual_list: individuals in the population
+            group_hashes: ensure robots with the same body are not born
+            generation: generation number to start evolution
+            num_evals: how many robots have been trained so far
+        """
 
         self.individual_list = individual_list
         self.group_hashes = group_hashes
@@ -12,6 +27,9 @@ class Population:
 
     @classmethod
     def initialize(cls):
+        """
+        initialize population randomly from scratch
+        """
 
         config = Config()
 
@@ -23,9 +41,9 @@ class Population:
         generation_dir = config.exp_dir / f"generation{generation:02}"
         generation_dir.mkdir(parents=False, exist_ok=False)
 
-        # sample robots
         for id_ in range(config.population_size):
 
+            # sample a robot
             individual = Individual.init_random(
                 id_=id_,
                 generation=generation,
@@ -33,10 +51,12 @@ class Population:
                 generation_dir=generation_dir,
             )
 
+            # ensure that robots with the same body are not born
             while individual.hash in group_hashes:
                 individual.reborn(config.shape)
-
             group_hashes[individual.hash] = True
+
+            # save robot information
             individual.save()
             individual_list.append(individual)
 
