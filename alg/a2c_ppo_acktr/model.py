@@ -3,7 +3,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from alg.a2c_ppo_acktr.distributions import Bernoulli, Categorical, DiagGaussian
+from alg.a2c_ppo_acktr.distributions import (Bernoulli, Categorical,
+                                             DiagGaussian)
 from alg.a2c_ppo_acktr.utils import init
 
 

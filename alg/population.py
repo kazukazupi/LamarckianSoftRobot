@@ -228,3 +228,25 @@ class Population:
 
             child_individual.save()
             self.individual_list[id_] = child_individual
+
+            self.log_writer.print_and_write(
+                f"individual {id_} was reproduced from {child_individual.parents_id} by mutation."
+            )
+
+    def evolve(self):
+
+        while True:
+            for message in [
+                "==============================================================================================",
+                f"generation: {(self.generation):02}",
+                "==============================================================================================",
+            ]:
+                self.log_writer.print_and_write(message)
+
+            evolution_state = self.train()
+
+            if evolution_state == EvolutionState.END:
+                self.log_writer.print_and_write("end evolution.")
+                return
+
+            self.reproduction()
