@@ -69,7 +69,7 @@ def run_ppo(structure: Structure, saving_dir: Path, config: Config):
 
     envs = make_vec_envs(
         env_name=config.env_name,
-        robot_structure=structure,
+        robot_structure=structure.as_tuple(),
         seed=None,
         num_processes=config.num_processes,
         gamma=config.gamma,
@@ -258,7 +258,7 @@ def run_ppo(structure: Structure, saving_dir: Path, config: Config):
                 actor_critic=actor_critic,
                 obs_rms=obs_rms,
                 env_name=config.env_name,
-                robot_structure=structure,
+                robot_structure=structure.as_tuple(),
                 seed=config.seed,
                 num_processes=config.num_processes,
                 eval_log_dir=log_dir,

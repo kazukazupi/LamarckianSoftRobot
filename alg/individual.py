@@ -51,7 +51,7 @@ class Individual:
             fp.write(self.info.json(indent=3))
 
     def train(self, config: Config):
-        run_ppo(self.structure, self.saving_dir, config)
+        self.info.fitness = run_ppo(self.structure, self.saving_dir, config)
 
     def reborn(self, robot_shape: Tuple[int, int]):
         self.structure = Structure(*sample_robot(robot_shape))
@@ -69,6 +69,23 @@ class Individual:
         info = IndividualInfo(id_=id_, generation=generation)
         saving_dir = generation_dir / f"id{(id_):02}"
 
+        saving_dir.mkdir(parents=False, exist_ok=False)
+
+        return cls(structure, info, saving_dir)
+
+    @classmethod
+    def init_designated_structure(
+        cls,
+        structure: Structure,
+        id_: int,
+        generation: int,
+        generation_dir: Path,
+        parents_id: Union[None, Tuple[int], Tuple[int, int]],
+    ):
+
+        info = IndividualInfo(id_=id_, generation=generation, parents_id=parents_id)
+
+        saving_dir = generation_dir / f"id{(id_):02}"
         saving_dir.mkdir(parents=False, exist_ok=False)
 
         return cls(structure, info, saving_dir)
