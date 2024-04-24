@@ -1,4 +1,6 @@
+import glob
 from enum import Enum, auto
+from pathlib import Path
 from typing import Dict, List, cast
 
 import numpy as np
@@ -6,7 +8,7 @@ import numpy as np
 from alg.config import Config
 from alg.individual import Individual
 from alg.structure import Structure, mutate_structure
-from alg.utils import FitnessWriter, LogWriter
+from alg.utils import FitnessWriter, IndexableList, LogWriter
 
 POP_TXT_FILE_NAME = "log.txt"
 POP_CSV_FILE_NAME = "fitness.csv"
@@ -20,7 +22,7 @@ class EvolutionState(Enum):
 class Population:
     def __init__(
         self,
-        individual_list: List[Individual],
+        individual_list: IndexableList,
         group_hashes: Dict[str, bool],
         generation: int,
         num_evals: int,
@@ -51,7 +53,7 @@ class Population:
         """
 
         # read commandline args and make experiment dir
-        config = Config()
+        config = Config.initialize()
 
         # setup log and fitness writer
         log_file_path = config.exp_dir / POP_TXT_FILE_NAME
@@ -60,7 +62,7 @@ class Population:
         log_writer = LogWriter(log_file_path)
         fitness_writer = FitnessWriter(csv_file_path, config.population_size)
 
-        individual_list = []
+        individual_list = IndexableList([])
         group_hashes = {}
         generation = 0
         num_evals = 0
@@ -89,9 +91,68 @@ class Population:
 
             # save robot information
             individual.save()
-            individual_list.append(individual)
+            individual_list[id_] = individual
 
         log_writer.print_and_write(f"initialized {config.population_size} robots.")
+
+        population = cls(
+            individual_list,
+            group_hashes,
+            generation,
+            num_evals,
+            log_writer,
+            fitness_writer,
+            config,
+        )
+
+        return population
+
+    @classmethod
+    def load(cls, exp_dir: Path):
+        """
+        load interrupted experiment
+        """
+
+        # load configuration
+        assert exp_dir.exists()
+        config = Config.load(exp_dir)
+
+        # setup log and fitness writer
+        log_file_path = config.exp_dir / POP_TXT_FILE_NAME
+        csv_file_path = config.exp_dir / POP_CSV_FILE_NAME
+        log_writer = LogWriter(log_file_path)
+        fitness_writer = FitnessWriter(csv_file_path, config.population_size)
+
+        individual_list = IndexableList([])
+        group_hashes = {}
+        generation = 0
+        num_evals = 0
+
+        while True:
+
+            generation_dir = config.exp_dir / f"generation{generation:02}"
+            individual_dir_list = sorted(glob.glob(str(generation_dir / "id*")))
+            path_list = [Path(val) for val in individual_dir_list]
+
+            # retrieve information for each robot
+            for path in path_list:
+                individual = Individual.load(path)
+                id_ = individual.id_
+                individual_list[id_] = individual
+                group_hashes[individual.hash] = True
+
+                if individual.info.fitness is not None:
+                    num_evals += 1
+
+            # end retrieval
+            if not (config.exp_dir / f"generation{(generation + 1):02}").exists():
+                message = f"restardted evolution. (generation: {generation}, num_evals: {num_evals})"
+                log_writer.print_and_write(message)
+                break
+
+            # go to next generation
+            fitness_writer.write(generation, individual_list)
+            generation += 1
 
         population = cls(
             individual_list,

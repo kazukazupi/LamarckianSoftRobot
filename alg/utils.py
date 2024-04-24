@@ -1,8 +1,20 @@
 import csv
+from collections import UserList
 from pathlib import Path
 from typing import List
 
 from alg.individual import Individual
+
+
+class IndexableList(UserList):
+    def __setitem__(self, index, value):
+        if len(self.data) == index:
+            self.data.append(value)
+        else:
+            self.data[index] = value
+
+    def append(self, value):
+        raise NotImplementedError()
 
 
 class LogWriter:
@@ -41,7 +53,7 @@ class FitnessWriter:
             row = ["i_generation"] + [f"id{id_}" for id_ in range(self.pop_size)]
             writer.writerow(row)
 
-    def write(self, generation: int, individual_list: List[Individual]):
+    def write(self, generation: int, individual_list: IndexableList):
 
         assert len(individual_list) == self.pop_size
 
