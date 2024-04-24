@@ -1,8 +1,11 @@
 from enum import Enum, auto
-from typing import Dict, List
+from typing import Dict, List, cast
+
+import numpy as np
 
 from alg.config import Config
 from alg.individual import Individual
+from alg.structure import Structure, mutate_structure
 from alg.utils import FitnessWriter, LogWriter
 
 POP_TXT_FILE_NAME = "log.txt"
@@ -140,6 +143,88 @@ class Population:
                 self.fitness_writer.write(self.generation, self.individual_list)
                 return EvolutionState.END
 
+        # save fitness information
         self.fitness_writer.write(self.generation, self.individual_list)
 
         return EvolutionState.CONTINUE
+
+    def reproduction(self, num_attempts: int = 100):
+        """
+        reproduction phase for the current generation (= self.generation)
+        """
+
+        # advance generation
+        self.generation += 1
+        generation_dir = self.config.exp_dir / f"generation{self.generation:02}"
+        generation_dir.mkdir()
+
+        # determine how many robots survive
+        elite_rate = (self.config.max_evaluations - self.num_evals - 1) / (
+            self.config.max_evaluations - 1
+        ) * (
+            self.config.elite_rate_high - self.config.elite_rate_low
+        ) + self.config.elite_rate_low
+        num_survivors = int(max([2, np.ceil(elite_rate * self.config.population_size)]))
+
+        # make fitness ranking
+        fitness_array = np.array(
+            [individual.info.fitness for individual in self.individual_list]
+        )
+        assert all([f is not None for f in fitness_array])  # make sure training is done
+
+        # select elite individuals
+        id_ranking = np.argsort(-fitness_array)
+        elite_id_list = id_ranking[0:num_survivors]
+
+        for message in [
+            "--------------------------------------------------------------------------------------------",
+            f"genetic operation (elite_rate: {elite_rate}, num_survivors: {num_survivors})",
+            "--------------------------------------------------------------------------------------------",
+            f"elites: {elite_id_list}.",
+        ]:
+            self.log_writer.print_and_write(message)
+
+        # configure child robots
+        for id_, individual in enumerate(self.individual_list):
+
+            # keep as it is if this robot is elite
+            if id_ in elite_id_list:
+                continue
+
+            error_flag = True
+
+            # mutation
+            for attempt in range(num_attempts):
+
+                parent_id = np.random.choice(elite_id_list)
+                parent_structure = self.individual_list[parent_id].structure
+                optional_child_structure = mutate_structure(
+                    parent_structure,
+                    self.config,
+                    self.group_hashes,
+                )
+
+                if optional_child_structure is not None:
+                    error_flag = False
+                    break
+
+            if error_flag:
+                raise NotImplementedError()
+
+            child_structure = cast(
+                Structure, optional_child_structure
+            )  # for static analysis
+
+            # save child information
+            child_individual = Individual.init_designated_structure(
+                structure=child_structure,
+                id_=id_,
+                generation=self.generation,
+                generation_dir=generation_dir,
+                parents_id=(parent_id,),
+            )
+
+            self.group_hashes[child_individual.hash] = True
+
+            child_individual.save()
+            self.individual_list[id_] = child_individual

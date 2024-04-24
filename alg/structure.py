@@ -2,7 +2,8 @@ from pathlib import Path
 from typing import Dict, Optional
 
 import numpy as np
-from evogym import draw, get_full_connectivity, has_actuator, is_connected, hashable  # type: ignore
+from evogym import has_actuator  # type: ignore
+from evogym import draw, get_full_connectivity, hashable, is_connected
 
 from alg.config import Config
 
@@ -36,7 +37,6 @@ class Structure:
 
 
 def mutate_structure(
-    self,
     parent_structure: Structure,
     config: Config,
     group_hashes: Dict[str, bool],
@@ -51,7 +51,7 @@ def mutate_structure(
 
     for attempt in range(num_attempts):
 
-        child_body = np.zeros_like(self.body)
+        child_body = np.zeros_like(parent_body)
 
         # mutate
         for i in range(child_body.shape[0]):
@@ -65,10 +65,11 @@ def mutate_structure(
             is_connected(child_body)
             and has_actuator(child_body)
             and (not np.array_equal(child_body, parent_body))
-            and (hashable(child_body) in group_hashes)
+            and (not hashable(child_body) in group_hashes)
         ):
             structure = Structure(child_body)
-            group_hashes[hashable[child_body]] = True
+            group_hashes[hashable(child_body)] = True
+
             return structure
 
     return None

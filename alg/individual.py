@@ -74,6 +74,23 @@ class Individual:
         return cls(structure, info, saving_dir)
 
     @classmethod
+    def init_designated_structure(
+        cls,
+        structure: Structure,
+        id_: int,
+        generation: int,
+        generation_dir: Path,
+        parents_id: Union[None, Tuple[int], Tuple[int, int]],
+    ):
+
+        info = IndividualInfo(id_=id_, generation=generation, parents_id=parents_id)
+
+        saving_dir = generation_dir / f"id{(id_):02}"
+        saving_dir.mkdir(parents=False, exist_ok=False)
+
+        return cls(structure, info, saving_dir)
+
+    @classmethod
     def load(cls, saving_dir: Path):
 
         structure = Structure.load(saving_dir)
