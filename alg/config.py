@@ -1,4 +1,5 @@
 import argparse
+import json
 from pathlib import Path
 from typing import Tuple
 
@@ -55,7 +56,8 @@ class Config(BaseModel):
     use_linear_lr_decay: bool
     cuda: bool = torch.cuda.is_available()
 
-    def __init__(self):
+    @classmethod
+    def initialize(cls):
 
         parser = argparse.ArgumentParser()
 
@@ -282,10 +284,23 @@ class Config(BaseModel):
         args = parser.parse_args()
         args_dict = vars(args)
 
-        super().__init__(**args_dict)
+        config = cls(**args_dict)
 
-        self.exp_dir.mkdir()
+        config.exp_dir.mkdir()
 
         # save parameter info
-        with open(self.exp_dir / CONFIG_FILE_NAME, "w") as fp:
-            fp.write(self.json(indent=3))
+        with open(config.exp_dir / CONFIG_FILE_NAME, "w") as fp:
+            fp.write(config.json(indent=3))
+
+        return config
+
+    @classmethod
+    def load(cls, exp_dir: Path):
+
+        with (exp_dir / CONFIG_FILE_NAME).open() as fd:
+            json_dict = json.load(fd)
+
+        config = cls(**json_dict)
+        assert config.exp_dir == exp_dir
+
+        return config
