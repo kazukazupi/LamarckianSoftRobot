@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 import numpy as np
 import torch
 from a2c_ppo_acktr.model import Policy  # type: ignore
@@ -59,3 +61,80 @@ def get_overtail(env_name: str) -> int:
         raise NotImplementedError(
             f'function "get_over_tail" does not support the environment {env_name}.'
         )
+
+
+def get_mass_point_in_order(body: np.ndarray) -> List[Tuple[int, int]]:
+    """
+    Return the coordinates of the mass point of all voxels in order from top-left to bottom-right.
+
+        top  left  mass  point  .___________.  top right mass point
+                                │           │
+                                │   voxel   │
+                                │           │
+        bottom left mass point  .___________.  bottom right mass point
+    """
+
+    contour = body != 0  # contour[h][w] = whether each voxel_{h,w} is empty ir not
+    (H, W) = contour.shape
+
+    mass_point_in_order = []
+
+    for h in range(H):
+        for w in range(W):
+            if contour[h][w]:  # voxel_{h,w}
+
+                coordinate = (h, w)  # top left mass point of this voxel
+                if h == 0:  # at the top edge of the body
+                    if w == 0:  # top left corner
+                        mass_point_in_order.append(coordinate)
+                    else:
+                        if contour[h][w - 1]:  # if there is a voxel to the left
+                            pass
+                        else:
+                            mass_point_in_order.append(coordinate)
+                else:
+                    if w == 0:  # at the left edge
+                        if contour[h - 1][w]:  # if there is a voxel above
+                            pass
+                        else:
+                            mass_point_in_order.append(coordinate)
+                    else:
+                        if contour[h - 1][w]:  # if there is a voxel above
+                            pass
+                        elif contour[h][w - 1]:  # if there is a voxel to the left
+                            pass
+                        else:
+                            mass_point_in_order.append(coordinate)
+
+                coordinate = (h, w + 1)  # top right mass point of this voxel
+                if h == 0:  # at the top edge of the body
+                    mass_point_in_order.append(coordinate)
+                else:
+                    if w == W - 1:  # at the right edge
+                        if contour[h - 1][w]:  # if there is a voxel above
+                            pass
+                        else:
+                            mass_point_in_order.append(coordinate)
+                    else:
+                        if contour[h - 1][w]:  # if there is a voxel above
+                            pass
+                        elif (
+                            contour[h][w + 1] and contour[h - 1][w + 1]
+                        ):  # If it is connected to the voxel at the top-right
+                            pass
+                        else:
+                            mass_point_in_order.append(coordinate)
+
+                coordinate = (h + 1, w)  # bottom left mass point of this voxel
+                if w == 0:  # at the left edge
+                    mass_point_in_order.append(coordinate)
+                else:
+                    if contour[h][w - 1]:  # if there is a voxel to the left
+                        pass
+                    else:
+                        mass_point_in_order.append(coordinate)
+
+                coordinate = (h + 1, w + 1)  # bottom right mass point of this voxel
+                mass_point_in_order.append(coordinate)
+
+    return mass_point_in_order
