@@ -161,3 +161,76 @@ def get_mass_point_in_order_with_count(body: np.ndarray) -> List[MassPointWithCo
         assert count <= 1
 
     return mpio_with_count
+
+
+def get_mapping_table_state(
+    child_body: np.ndarray, parent_body: np.ndarray, env_name: str
+) -> List[int]:
+    """
+    Return: mapping_table
+        child structure's input layer j-th node corresponds to
+        parent structure's input layer i-th node
+        where mp_mapping_table[i] = j
+    """
+
+    child_mpio_with_count = get_mass_point_in_order_with_count(child_body)
+    parent_mpio_with_count = get_mass_point_in_order_with_count(parent_body)
+
+    """mp_mapping_table
+    child structure's j-th mass point corresponds to
+    parent structure's i-th mass point.
+    where mp_mapping_table[i] = j 
+    """
+
+    mp_mapping_table = []
+
+    for mass_point_with_count in parent_mpio_with_count:
+        if mass_point_with_count in child_mpio_with_count:
+            mp_mapping_table.append(child_mpio_with_count.index(mass_point_with_count))
+        else:
+            mp_mapping_table.append(-1)
+
+    overhead = get_overhead(env_name)
+    overtail = get_overtail(env_name)
+
+    mapping_table = [i for i in range(overhead)]
+    mapping_table += list(
+        map(lambda x: -1 if (x == -1) else overhead + x, mp_mapping_table)
+    )
+    mapping_table += list(
+        map(
+            lambda x: -1 if (x == -1) else overhead + x + len(child_mpio_with_count),
+            mp_mapping_table,
+        )
+    )
+    for i in range(overtail):
+        mapping_table.append(i + overhead + 2 * len(child_mpio_with_count))
+
+    return mapping_table
+
+
+def get_mapping_table_action(body_s: np.ndarray, body_t: np.ndarray) -> List[int]:
+    """
+    Return: mapping_table
+        child structure's output layer j-th node corresponds to
+        parent structure's output layer i-th node
+        where mp_mapping_table[i] = j
+    """
+
+    actuator_coordinates_s = np.stack(np.where(body_s >= 3), axis=-1)
+    actuator_coordinates_t = np.stack(np.where(body_t >= 3), axis=-1)
+
+    mapping_table = []
+
+    for coordinate_s in actuator_coordinates_s:
+        result = (
+            np.transpose((actuator_coordinates_t - coordinate_s)) == 0
+        )  # compare with each x,y coordinate
+        result = result[0] & result[1]
+        result = np.where(result == True)
+        if len(result[0]) > 0:
+            mapping_table.append(result[0][0])
+        else:
+            mapping_table.append(-1)
+
+    return mapping_table
