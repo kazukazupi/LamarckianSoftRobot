@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, NamedTuple, Tuple
 
 import numpy as np
 import torch
@@ -83,38 +83,38 @@ def get_mass_point_in_order(body: np.ndarray) -> List[Tuple[int, int]]:
         for w in range(W):
             if contour[h][w]:  # voxel_{h,w}
 
-                coordinate = (h, w)  # top left mass point of this voxel
+                mass_point = (h, w)  # top left mass point of this voxel
                 if h == 0:  # at the top edge of the body
                     if w == 0:  # top left corner
-                        mass_point_in_order.append(coordinate)
+                        mass_point_in_order.append(mass_point)
                     else:
                         if contour[h][w - 1]:  # if there is a voxel to the left
                             pass
                         else:
-                            mass_point_in_order.append(coordinate)
+                            mass_point_in_order.append(mass_point)
                 else:
                     if w == 0:  # at the left edge
                         if contour[h - 1][w]:  # if there is a voxel above
                             pass
                         else:
-                            mass_point_in_order.append(coordinate)
+                            mass_point_in_order.append(mass_point)
                     else:
                         if contour[h - 1][w]:  # if there is a voxel above
                             pass
                         elif contour[h][w - 1]:  # if there is a voxel to the left
                             pass
                         else:
-                            mass_point_in_order.append(coordinate)
+                            mass_point_in_order.append(mass_point)
 
-                coordinate = (h, w + 1)  # top right mass point of this voxel
+                mass_point = (h, w + 1)  # top right mass point of this voxel
                 if h == 0:  # at the top edge of the body
-                    mass_point_in_order.append(coordinate)
+                    mass_point_in_order.append(mass_point)
                 else:
                     if w == W - 1:  # at the right edge
                         if contour[h - 1][w]:  # if there is a voxel above
                             pass
                         else:
-                            mass_point_in_order.append(coordinate)
+                            mass_point_in_order.append(mass_point)
                     else:
                         if contour[h - 1][w]:  # if there is a voxel above
                             pass
@@ -123,18 +123,41 @@ def get_mass_point_in_order(body: np.ndarray) -> List[Tuple[int, int]]:
                         ):  # If it is connected to the voxel at the top-right
                             pass
                         else:
-                            mass_point_in_order.append(coordinate)
+                            mass_point_in_order.append(mass_point)
 
-                coordinate = (h + 1, w)  # bottom left mass point of this voxel
+                mass_point = (h + 1, w)  # bottom left mass point of this voxel
                 if w == 0:  # at the left edge
-                    mass_point_in_order.append(coordinate)
+                    mass_point_in_order.append(mass_point)
                 else:
                     if contour[h][w - 1]:  # if there is a voxel to the left
                         pass
                     else:
-                        mass_point_in_order.append(coordinate)
+                        mass_point_in_order.append(mass_point)
 
-                coordinate = (h + 1, w + 1)  # bottom right mass point of this voxel
-                mass_point_in_order.append(coordinate)
+                mass_point = (h + 1, w + 1)  # bottom right mass point of this voxel
+                mass_point_in_order.append(mass_point)
 
     return mass_point_in_order
+
+
+class MassPointWithCount(NamedTuple):
+    mass_point: Tuple[int, int]  # coordinate
+    count_: int  # Number of occurrences of this mass_point
+
+
+def get_mass_point_in_order_with_count(body: np.ndarray) -> List[MassPointWithCount]:
+    """
+    convert 'mass point in order' to 'mass point with count in order'
+    """
+
+    mpio = get_mass_point_in_order(body)
+    mpio_with_count = []
+
+    contained: List[Tuple[int, int]] = []
+    for mass_point in mpio:
+        count = contained.count(mass_point)
+        mpio_with_count.append(MassPointWithCount(mass_point, count))
+        contained.append(mass_point)
+        assert count <= 1
+
+    return mpio_with_count
