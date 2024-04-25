@@ -176,6 +176,11 @@ class Population:
 
         for individual in self.individual_list:
 
+            # end evolution
+            if self.num_evals > self.config.max_evaluations:
+                self.fitness_writer.write(self.generation, self.individual_list)
+                return EvolutionState.END
+
             id_ = individual.id_
 
             # skip training if robot has already learned
@@ -198,11 +203,6 @@ class Population:
             )
 
             self.num_evals += 1
-
-            # end evolution
-            if self.num_evals == self.config.max_evaluations:
-                self.fitness_writer.write(self.generation, self.individual_list)
-                return EvolutionState.END
 
         # save fitness information
         self.fitness_writer.write(self.generation, self.individual_list)
