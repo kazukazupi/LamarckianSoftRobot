@@ -8,14 +8,13 @@ from pydantic import BaseModel
 
 from alg.a2c_ppo_acktr.model import Policy  # type: ignore
 from alg.config import Config
+from alg.globals import JSON_FILE_NAME
 from alg.inherit import inherit_controller_mutation
 from alg.ppo import run_ppo
 from alg.ppo.envs import make_vec_envs
 from alg.ppo.run import ACTOR_CRITIC_FILE_NAME
 from alg.structure import Structure
 from alg.utils import LogWriter
-
-JSON_FILE_NAME = "robot_info.json"
 
 
 class CrossoverInfo(BaseModel):

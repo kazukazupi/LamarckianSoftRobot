@@ -1,8 +1,10 @@
 import csv
+import shutil
 from collections import UserList
 from pathlib import Path
 from typing import List
 
+from alg.config import Config
 from alg.individual import Individual
 
 
@@ -63,3 +65,11 @@ class FitnessWriter:
                 individual.info.fitness for individual in individual_list
             ]
             writer.writerow(row)
+
+
+def copy_first_generation(src_exp_dir: Path, dst_exp_dir: Path):
+    """
+    To conduct experiments with altered conditions, copy only the first generation of experiment directory.
+    """
+
+    assert (src_exp_dir / "generation01").exists()

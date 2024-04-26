@@ -6,7 +6,7 @@ from typing import Tuple
 import torch
 from pydantic import BaseModel
 
-CONFIG_FILE_NAME = "config.json"
+from alg.globals import CONFIG_FILE_NAME
 
 
 class Config(BaseModel):

@@ -6,12 +6,10 @@ from typing import Dict, List, cast
 import numpy as np
 
 from alg.config import Config
+from alg.globals import POP_CSV_FILE_NAME, POP_TXT_FILE_NAME
 from alg.individual import Individual
 from alg.structure import Structure, mutate_structure
 from alg.utils import FitnessWriter, IndexableList, LogWriter
-
-POP_TXT_FILE_NAME = "log.txt"
-POP_CSV_FILE_NAME = "fitness.csv"
 
 
 class EvolutionState(Enum):
