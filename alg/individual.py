@@ -13,6 +13,7 @@ from alg.ppo import run_ppo
 from alg.ppo.envs import make_vec_envs
 from alg.ppo.run import ACTOR_CRITIC_FILE_NAME
 from alg.structure import Structure
+from alg.utils import LogWriter
 
 JSON_FILE_NAME = "robot_info.json"
 
@@ -54,9 +55,18 @@ class Individual:
         with open(self.saving_dir / JSON_FILE_NAME, "w") as fp:
             fp.write(self.info.json(indent=3))
 
-    def train(self, config: Config, parents: Optional[List["Individual"]]):
+    def train(
+        self,
+        config: Config,
+        parents: Optional[List["Individual"]],
+        log_writer: LogWriter,
+    ):
         actor_critic = get_controller(
-            self.structure, parents, config, self.crossover_info
+            self.structure,
+            parents,
+            config,
+            self.crossover_info,
+            log_writer,
         )
         self.info.fitness = run_ppo(
             self.structure, self.saving_dir, config, actor_critic
@@ -141,6 +151,7 @@ def get_controller(
     parents: Optional[List[Individual]],
     config: Config,
     crossover_info: Optional[CrossoverInfo],
+    log_writer: LogWriter,
 ) -> Policy:
 
     envs = make_vec_envs(
@@ -163,7 +174,7 @@ def get_controller(
 
     # inherit is allowed and configured from mutation
     elif len(parents) == 1:
-        print("inherited controller.")
+        log_writer.print_and_write("\tinherited controller.")
 
         parent = parents[0]
         parent_actor_critic = torch.load(
@@ -182,6 +193,7 @@ def get_controller(
 
     # inherit is allowed and is emerged from crossover
     elif len(parents) == 2:
+        log_writer.print_and_write("\tinherited controller.")
         raise NotImplementedError()
         # print("inherited controller.")
 
