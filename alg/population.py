@@ -1,7 +1,7 @@
 import glob
 from enum import Enum, auto
 from pathlib import Path
-from typing import Dict, List, cast
+from typing import Dict, cast
 
 import numpy as np
 
@@ -203,7 +203,7 @@ class Population:
                 )
 
             # train and set fitness value
-            individual.train(self.config, parents)
+            individual.train(self.config, parents, self.log_writer)
             individual.save()
 
             self.log_writer.print_and_write(
