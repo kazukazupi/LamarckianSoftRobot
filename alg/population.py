@@ -115,6 +115,8 @@ class Population:
         assert exp_dir.exists()
         config = Config.load(exp_dir)
 
+        assert config.exp_dir == exp_dir
+
         # setup log and fitness writer
         log_file_path = config.exp_dir / POP_TXT_FILE_NAME
         csv_file_path = config.exp_dir / POP_CSV_FILE_NAME
