@@ -194,8 +194,16 @@ class Population:
                 f"training robot {id_} (parents: {individual.parents_id})..."
             )
 
+            # set parents
+            if individual.info.parents_id is None:
+                parents = None
+            else:
+                parents = tuple(
+                    [self.individual_list[id_] for id_ in individual.info.parents_id]
+                )
+
             # train and set fitness value
-            individual.train(self.config)
+            individual.train(self.config, parents)
             individual.save()
 
             self.log_writer.print_and_write(

@@ -1,85 +1,9 @@
-from typing import List, NamedTuple, Optional, Tuple
+from typing import List, NamedTuple, Tuple
 
 import numpy as np
 import torch
-from a2c_ppo_acktr.model import Policy  # type: ignore
 
-from alg.config import Config
-from alg.individual import CrossoverInfo, Individual
-from alg.ppo.run import ACTOR_CRITIC_FILE_NAME
-
-
-def get_controller(
-    body: np.ndarray,
-    observation_space_shape: tuple,
-    action_space,
-    parents: List[Individual],
-    config: Config,
-    env_name: str,
-    crossover_info: Optional[CrossoverInfo],
-) -> Policy:
-
-    # inherit is not allowed or has no parents
-    if (config.non_inherit) or len(parents) == 0:
-
-        actor_critic = Policy(
-            obs_shape=observation_space_shape, action_space=action_space
-        )
-
-    # inherit is allowed and is emerged from mutation
-    elif len(parents) == 1:
-        print("inherited controller.")
-
-        parent = parents[0]
-        parent_actor_critic = torch.load(
-            parent.saving_dir / ACTOR_CRITIC_FILE_NAME,
-            map_location=lambda storage, loc: storage,
-        )[0]
-
-        actor_critic = inherit_controller_mutation(
-            parent_body=parent.structure.body,
-            parent_actor_critic=parent_actor_critic,
-            child_body=body,
-            child_observation_space_shape=observation_space_shape,
-            child_action_space=action_space,
-            env_name=env_name,
-        )
-
-    # inherit is allowed and is emerged from crossover
-    elif len(parents) == 2:
-        raise NotImplementedError()
-        # print("inherited controller.")
-
-        # assert crossover_info is not None
-        # axis = crossover_info["axis"]
-        # mid = crossover_info["mid"]
-
-        # parent1 = parents[0]
-        # parent2 = parents[1]
-
-        # parent1_actor_critic = torch.load(
-        #     os.path.join(parent1.saving_dir, "actor_critic.pt"),
-        #     map_location=lambda storage, loc: storage,
-        # )[0]
-
-        # parent2_actor_critic = torch.load(
-        #     os.path.join(parent2.saving_dir, "actor_critic.pt"),
-        #     map_location=lambda storage, loc: storage,
-        # )[0]
-
-        # actor_critic = inherit_controller_crossover(
-        #     child_body=body,
-        #     axis=axis,
-        #     mid=mid,
-        #     parent1_body=parent1.body,
-        #     parent2_body=parent2.body,
-        #     parent1_actor_critic=parent1_actor_critic,
-        #     parent2_actor_critic=parent2_actor_critic,
-        #     child_observation_space_shape=observation_space_shape,
-        #     child_action_space=action_space,
-        # )
-
-    return actor_critic
+from alg.a2c_ppo_acktr.model import Policy  # type: ignore
 
 
 def inherit_controller_mutation(

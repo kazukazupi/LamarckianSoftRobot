@@ -98,8 +98,8 @@ class Config(BaseModel):
         parser.add_argument("--elite-rate-low", type=float, default=0.1)
         parser.add_argument(
             "--non_inherit",
-            action="store_false",
-            default=True,
+            action="store_true",
+            default=False,
             help="do controller inheritance",
         )
 
