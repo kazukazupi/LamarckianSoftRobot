@@ -6,7 +6,7 @@ import torch
 
 sys.path.append(".")
 
-from visualize_base_class import Visualizer
+from visualizer_base_class import Visualizer
 
 from alg import Config, Structure
 from alg.ppo.run import ACTOR_CRITIC_FILE_NAME  # type: ignore
