@@ -14,7 +14,7 @@ from alg.ppo.envs import make_vec_envs  # type: ignore
 from alg.ppo.utils import get_vec_normalize  # type: ignore
 
 
-class Visualize:
+class Visualizer:
     def __init__(
         self,
         structure: Structure,
@@ -129,6 +129,7 @@ class Visualize:
 
         self.envs.close()
 
+        # write video
         if self.movie_path is not None:
             print("Writing Video...")
             assert best_frames is not None

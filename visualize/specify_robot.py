@@ -6,7 +6,7 @@ import torch
 
 sys.path.append(".")
 
-from visualize_base_class import Visualize
+from visualize_base_class import Visualizer
 
 from alg import Config, Structure
 from alg.ppo.run import ACTOR_CRITIC_FILE_NAME  # type: ignore
@@ -31,7 +31,7 @@ def load(exp_dir: Path, generation: int, id: int):
     return structure, actor_critic_obs_rms
 
 
-class SpecifyRobotVisualize(Visualize):
+class SpecifyRobotVisualizer(Visualizer):
     def __init__(self):
         parser = argparse.ArgumentParser()
         parser.add_argument("-e", "--exp-dir", type=str)
@@ -60,4 +60,4 @@ class SpecifyRobotVisualize(Visualize):
 
 if __name__ == "__main__":
 
-    SpecifyRobotVisualize().run()
+    SpecifyRobotVisualizer().run()
