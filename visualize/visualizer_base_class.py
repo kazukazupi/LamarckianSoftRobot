@@ -57,6 +57,9 @@ class Visualizer:
         self.obs_rms = obs_rms
 
     def run(self):
+        """
+        visualize
+        """
 
         vec_norm = get_vec_normalize(self.envs)
         if self.obs_rms is not None:
@@ -76,22 +79,9 @@ class Visualizer:
         if self.movie_path is not None:
             # The frames of the episode that earned the highest cumulative reward.
             best_frames: Optional[List[np.ndarray]] = None
-        else:
-            self.envs.render("screen")
-
-        frames: List[np.ndarray] = []
+            frames: List[np.ndarray] = []
 
         while len(sum_reward_list) < self.num_episodes:
-
-            # act
-            with torch.no_grad():
-                _, action, _, recurrent_hidden_states = self.actor_critic.act(
-                    obs, recurrent_hidden_states, masks, deterministic=True
-                )
-
-            obs, reward, done, infos = self.envs.step(action)
-
-            sum_reward += reward
 
             if self.movie_path is not None:
                 frame = self.envs.render(mode="img")
@@ -108,6 +98,16 @@ class Visualizer:
             else:
                 self.envs.render("screen")
 
+            # act
+            with torch.no_grad():
+                _, action, _, recurrent_hidden_states = self.actor_critic.act(
+                    obs, recurrent_hidden_states, masks, deterministic=True
+                )
+
+            obs, reward, done, infos = self.envs.step(action)
+
+            sum_reward += reward
+
             masks = torch.tensor(
                 [[0.0] if done_ else [1.0] for done_ in done],
                 dtype=torch.float32,
@@ -122,7 +122,7 @@ class Visualizer:
                         or all([sum_reward > val for val in sum_reward_list])
                     ):
                         best_frames = frames
-                    frames = []
+                        frames = []
                     sum_reward_list.append(sum_reward)
                     print(f"sum_reward: {sum_reward.numpy().flatten()[0]:.03f}")
                     sum_reward = torch.tensor(0)

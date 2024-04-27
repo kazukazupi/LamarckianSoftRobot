@@ -44,6 +44,9 @@ class BestRobotVisualizer(SpecifyRobotVisualizer):
 
 
 if __name__ == "__main__":
+    """
+    Visualize the movement of the robot that performed the best during the experiments.
+    """
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--exp-dir", type=str)
