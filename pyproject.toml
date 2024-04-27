@@ -1,0 +1,7 @@
+[tool.black]
+exclude = '''
+(    
+    alg/a2c_ppo_acktr
+    | alg/ppo
+)
+'''

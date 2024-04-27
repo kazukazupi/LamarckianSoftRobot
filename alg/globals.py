@@ -1,0 +1,6 @@
+CONFIG_FILE_NAME = "config.json"
+JSON_FILE_NAME = "robot_info.json"
+POP_TXT_FILE_NAME = "log.txt"
+POP_CSV_FILE_NAME = "fitness.csv"
+BODY_FILE_NAME = "body.npy"
+CONNECTIONS_FILE_NAME = "connections.npy"

@@ -1,9 +1,9 @@
 import csv
+import shutil
 from collections import UserList
 from pathlib import Path
-from typing import List
 
-from alg.individual import Individual
+from alg.config import Config
 
 
 class IndexableList(UserList):
@@ -63,3 +63,33 @@ class FitnessWriter:
                 individual.info.fitness for individual in individual_list
             ]
             writer.writerow(row)
+
+
+def copy_first_generation(
+    src_exp_dir: Path, dst_exp_dir: Path, non_inherit: bool, crossover_rate: float
+):
+    """
+    To conduct experiments with altered conditions, copy only the first generation of experiment directory.
+    """
+
+    assert (src_exp_dir / "generation01").exists()
+
+    dst_exp_dir.mkdir()
+
+    shutil.copytree(
+        src=(src_exp_dir / "generation00"), dst=(dst_exp_dir / "generation00")
+    )
+
+    config = Config.load(src_exp_dir)
+    config.exp_dir = dst_exp_dir
+
+    if config.non_inherit != non_inherit:
+        print(f"changed config.non_inherit from {config.non_inherit} to {non_inherit}")
+        config.non_inherit = non_inherit
+    if config.crossover_rate != crossover_rate:
+        print(
+            f"changed config.non_inherit from {config.crossover_rate} to {crossover_rate}"
+        )
+        config.crossover_rate = crossover_rate
+
+    config.save()

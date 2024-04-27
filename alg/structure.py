@@ -6,9 +6,7 @@ from evogym import has_actuator  # type: ignore
 from evogym import draw, get_full_connectivity, hashable, is_connected
 
 from alg.config import Config
-
-BODY_FILE_NAME = "body.npy"
-CONNECTIONS_FILE_NAME = "connections.npy"
+from alg.globals import BODY_FILE_NAME, CONNECTIONS_FILE_NAME
 
 
 class Structure:

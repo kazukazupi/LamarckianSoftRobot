@@ -6,7 +6,7 @@ from typing import Tuple
 import torch
 from pydantic import BaseModel
 
-CONFIG_FILE_NAME = "config.json"
+from alg.globals import CONFIG_FILE_NAME
 
 
 class Config(BaseModel):
@@ -98,8 +98,8 @@ class Config(BaseModel):
         parser.add_argument("--elite-rate-low", type=float, default=0.1)
         parser.add_argument(
             "--non_inherit",
-            action="store_false",
-            default=True,
+            action="store_true",
+            default=False,
             help="do controller inheritance",
         )
 
@@ -287,10 +287,7 @@ class Config(BaseModel):
         config = cls(**args_dict)
 
         config.exp_dir.mkdir()
-
-        # save parameter info
-        with open(config.exp_dir / CONFIG_FILE_NAME, "w") as fp:
-            fp.write(config.json(indent=3))
+        config.save()
 
         return config
 
@@ -304,3 +301,8 @@ class Config(BaseModel):
         assert config.exp_dir == exp_dir
 
         return config
+
+    def save(self):
+
+        with open(self.exp_dir / CONFIG_FILE_NAME, "w") as fp:
+            fp.write(self.json(indent=3))

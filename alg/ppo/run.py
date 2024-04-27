@@ -25,7 +25,7 @@ RL_CSV_FILE_NAME = "log.csv"
 ACTOR_CRITIC_FILE_NAME = "actor_critic.pt"
 
 
-def run_ppo(structure: Structure, saving_dir: Path, config: Config):
+def run_ppo(structure: Structure, saving_dir: Path, config: Config, actor_critic: Policy):
 
     termination_condition = utils.TerminationCondition(config.max_iters)
 
@@ -88,11 +88,11 @@ def run_ppo(structure: Structure, saving_dir: Path, config: Config):
     #     crossover_info=crossover_info,
     # )
 
-    actor_critic = Policy(
-        envs.observation_space.shape,
-        envs.action_space,
-        base_kwargs={"recurrent": config.recurrent_policy},
-    )
+    # actor_critic = Policy(
+    #     envs.observation_space.shape,
+    #     envs.action_space,
+    #     base_kwargs={"recurrent": config.recurrent_policy},
+    # )
 
     # # if parent_robot_dir is not None:
     # #     assert(config.inherit_en)

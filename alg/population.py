@@ -1,17 +1,15 @@
 import glob
 from enum import Enum, auto
 from pathlib import Path
-from typing import Dict, List, cast
+from typing import Dict, cast
 
 import numpy as np
 
 from alg.config import Config
+from alg.globals import POP_CSV_FILE_NAME, POP_TXT_FILE_NAME
 from alg.individual import Individual
 from alg.structure import Structure, mutate_structure
 from alg.utils import FitnessWriter, IndexableList, LogWriter
-
-POP_TXT_FILE_NAME = "log.txt"
-POP_CSV_FILE_NAME = "fitness.csv"
 
 
 class EvolutionState(Enum):
@@ -117,6 +115,8 @@ class Population:
         assert exp_dir.exists()
         config = Config.load(exp_dir)
 
+        assert config.exp_dir == exp_dir
+
         # setup log and fitness writer
         log_file_path = config.exp_dir / POP_TXT_FILE_NAME
         csv_file_path = config.exp_dir / POP_CSV_FILE_NAME
@@ -194,8 +194,16 @@ class Population:
                 f"training robot {id_} (parents: {individual.parents_id})..."
             )
 
+            # set parents
+            if individual.info.parents_id is None:
+                parents = None
+            else:
+                parents = tuple(
+                    [self.individual_list[id_] for id_ in individual.info.parents_id]
+                )
+
             # train and set fitness value
-            individual.train(self.config)
+            individual.train(self.config, parents, self.log_writer)
             individual.save()
 
             self.log_writer.print_and_write(
