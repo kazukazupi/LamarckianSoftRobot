@@ -44,3 +44,9 @@ mypy ./
 ```bash
 python ./example/run.py --max-iters 10 --population-size 5 --max-evaluations 10 --exp-dir ./result/experiment
 ```
+
+### 中断された実験を再開する
+アクシデントにより実験が途中で中断されてしまった場合、その実験結果を格納するディレクトリを指定することで実験を再開することができます。
+```bash
+python ./example/from_middle.py -e <再開する実験のディレクトリ>
+```
