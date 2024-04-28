@@ -1,5 +1,11 @@
 # Lamarckian Soft Robot
 
+Evolved robots inheriting the controller (proposed method)
+![with controller inherit](images/figure5a_proposed.gif)
+
+Evolved robots without inheriting the controller (existing method)
+![without controller inherit](images/figure5b_existing.gif)
+
 [日本語版のREADMEはこちら](./README-ja.md)
 
 ## Overview
