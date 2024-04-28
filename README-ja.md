@@ -1,5 +1,7 @@
 # Lamarckian Soft Robot
 
+[English version of this README](./README.md)
+
 ## 概要
 [Genetic and Evolutionary Computation Conference (GECCO-2024)](http://gecco-2024.sigevo.org/HomePage)に採択された論文「Lamarckian Co-design of Soft Robots via Transfer Learning」の実装のgithubレポジトリです。
 深層強化学習による学習結果を個体間で共有することで、より効率の良いソフトロボットの設計を可能にしました。ロボットのシミュレーションには[evogym](https://evolutiongym.github.io/)を用いています。
