@@ -7,6 +7,8 @@ import torch.utils.data
 from stable_baselines3.common.running_mean_std import RunningMeanStd
 from torch import autograd
 
+# Derived from
+# https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail
 
 class Discriminator(nn.Module):
     def __init__(self, input_dim, hidden_dim, device):

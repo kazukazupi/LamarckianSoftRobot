@@ -1,5 +1,6 @@
 .mypy_cache
-example/*
 result/*
+!result/.gitkeep
 __pycache__
 visualize/log_dir
+*.mp4

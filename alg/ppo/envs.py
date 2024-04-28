@@ -4,16 +4,14 @@ import gym  # type: ignore
 import numpy as np
 import torch
 from gym.spaces.box import Box  # type: ignore
-from stable_baselines3.common.atari_wrappers import (ClipRewardEnv,
-                                                     EpisodicLifeEnv,
-                                                     FireResetEnv,
-                                                     MaxAndSkipEnv,
-                                                     NoopResetEnv, WarpFrame)
-from stable_baselines3.common.monitor import Monitor
-from stable_baselines3.common.vec_env import (DummyVecEnv, SubprocVecEnv,
-                                              VecEnvWrapper)
+from stable_baselines3.common.atari_wrappers import (  # type: ignore
+    ClipRewardEnv, EpisodicLifeEnv, FireResetEnv, MaxAndSkipEnv, NoopResetEnv,
+    WarpFrame)
+from stable_baselines3.common.monitor import Monitor  # type: ignore
+from stable_baselines3.common.vec_env import VecEnvWrapper  # type: ignore
+from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3.common.vec_env.vec_normalize import \
-    VecNormalize as VecNormalize_
+    VecNormalize as VecNormalize_  # type: ignore
 
 # Derived from
 # https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail

@@ -16,6 +16,8 @@ from stable_baselines3.common.vec_env import (DummyVecEnv, SubprocVecEnv,
 from stable_baselines3.common.vec_env.vec_normalize import \
     VecNormalize as VecNormalize_
 
+# Derived from
+# https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail
 
 def make_env(env_id, seed, rank, log_dir, allow_early_resets):
     def _thunk():

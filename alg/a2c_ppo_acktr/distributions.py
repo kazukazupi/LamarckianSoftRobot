@@ -6,6 +6,9 @@ import torch.nn.functional as F
 
 from alg.a2c_ppo_acktr.utils import AddBias, init
 
+# Derived from
+# https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail
+
 """
 Modify standard PyTorch distributions so they are compatible with this code.
 """

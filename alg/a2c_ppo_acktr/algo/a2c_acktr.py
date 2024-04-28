@@ -4,6 +4,8 @@ import torch.optim as optim
 
 from alg.a2c_ppo_acktr.algo.kfac import KFACOptimizer
 
+# Derived from
+# https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail
 
 class A2C_ACKTR:
     def __init__(
