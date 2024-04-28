@@ -63,3 +63,13 @@ python example/copy_first_generation.py -s ./result/experiment -d ./result/exper
 ```bash
 python ./example/from_middle.py --exp-dir ./result/experiment_non_inherit
 ```
+
+### ロボットの可視化
+実験結果を可視化することもできます。以下のコードでは、指定されたディレクトリに保存された実験で、最も成績の良いロボットの動きを可視化するコードです:
+```bash
+python visualize/best_robot.py -e ./result/experiment
+```
+ファイルのパスを指定すれば、ロボットの動きをmp4ファイルとして保存することもできます。
+```bash
+python visualize/best_robot.py -e ./result/experiment -m ./movie.mp4
+```

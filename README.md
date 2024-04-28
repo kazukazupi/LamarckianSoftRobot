@@ -65,3 +65,13 @@ Then, resume the evolution of the newly born experiment directory:
 ```bash
 python ./example/from_middle.py --exp-dir ./result/experiment_non_inherit
 ```
+
+### Robot Visualization
+You can also visualize the experiment results. The following code visualizes the movement of the best-performing robot in the experiments saved in the specified directory:
+```bash
+python visualize/best_robot.py -e ./result/experiment
+```
+You can also save the robot's movement as an mp4 file by specifying the file path:
+```bash
+python visualize/best_robot.py -e ./result/experiment -m ./movie.mp4
+```
