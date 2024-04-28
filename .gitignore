@@ -2,3 +2,4 @@
 example/*
 result/*
 __pycache__
+visualize/log_dir
