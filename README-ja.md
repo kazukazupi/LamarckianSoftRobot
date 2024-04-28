@@ -1,5 +1,8 @@
 # Lamarckian Soft Robot
 
+![継承あり](images/figure5a_proposed.mov)
+![継承無し](images/figure5b_existing.mov)
+
 [English version of this README](./README.md)
 
 ## 概要
