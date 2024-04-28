@@ -5,8 +5,10 @@
 深層強化学習による学習結果を個体間で共有することで、より効率の良いソフトロボットの設計を可能にしました。ロボットのシミュレーションには[evogym](https://evolutiongym.github.io/)を用いています。
 
 ## 環境構築
+
 ### evogymの環境構築
 [evogymのgithubレポジトリ](https://github.com/EvolutionGym/evogym)のInstallationに従い、evogymを動かすための環境構築を行なってください。condaを用いた場合でしか検証を行っていないので、condaを用いる子をと推奨します。
+
 ### 本レポジトリのための環境構築
 このレポジトリをローカルにcloneしてください。
 
@@ -18,4 +20,20 @@ conda activate evogym
 
 ```bash
 conda install pydantic
+```
+
+## Pull Requestを出す場合
+Pull Requestを出す場合は、フォーマッタ・リンターもインストールしてください:
+
+```bash
+conda install isort
+conda install black
+conda install mypy
+```
+
+フォーマッタ・リンターをかけてからPull Requestを出してください:
+```bash
+isort ./
+balck ./
+mypy ./
 ```
