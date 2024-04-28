@@ -15,12 +15,14 @@
 ## 環境構築
 
 ### evogymの環境構築
-[evogymのgithubレポジトリ](https://github.com/EvolutionGym/evogym)のInstallationに従い、evogymを動かすための環境構築を行なってください。condaを用いた場合でしか検証を行っていないので、condaを用いる子をと推奨します。
+[evogymのgithubレポジトリ](https://github.com/EvolutionGym/evogym)のInstallationに従い、evogymを動かすための環境構築を行なってください。condaを用いた場合でしか検証を行っていないので、condaを用いることを推奨します。
 
 ### 本レポジトリのための環境構築
 このレポジトリをローカルにcloneしてください。
-
-その上でevogym環境に入ります。
+```bash
+git clone git@github.com:kazukazupi/LamarckianSoftRobot.git
+```
+evogym環境に入ります。
 ```bash
 conda activate evogym
 ```
