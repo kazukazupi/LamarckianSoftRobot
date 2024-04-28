@@ -37,3 +37,10 @@ isort ./
 balck ./
 mypy ./
 ```
+
+## チュートリアル
+### まずは走らせてみる
+以下のコードでロボットを進化させることができる（実行には数分かかる）。
+```bash
+python ./example/run.py --max-iters 10 --population-size 5 --max-evaluations 10 --exp-dir ./result/experiment
+```
