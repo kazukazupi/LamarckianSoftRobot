@@ -1,5 +1,11 @@
 # Lamarckian Soft Robot
 
+コントローラーの継承を経て進化したロボット (提案手法)
+![with controller inherit](images/figure5a_proposed.gif)
+
+コントローラーの継承なしに進化したロボット (既存手法)
+![without controller inherit](images/figure5b_existing.gif)
+
 [English version of this README](./README.md)
 
 ## 概要
