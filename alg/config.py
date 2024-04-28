@@ -8,6 +8,9 @@ from pydantic import BaseModel
 
 from alg.globals import CONFIG_FILE_NAME
 
+# Derived from
+# https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail
+
 
 class Config(BaseModel):
 
@@ -94,8 +97,18 @@ class Config(BaseModel):
             default=0.1,
             help="each voxel's probability to mutate",
         )
-        parser.add_argument("--elite-rate-high", type=float, default=0.6)
-        parser.add_argument("--elite-rate-low", type=float, default=0.1)
+        parser.add_argument(
+            "--elite-rate-high",
+            type=float,
+            default=0.6,
+            help="Elite rate at the start of the evolution",
+        )
+        parser.add_argument(
+            "--elite-rate-low",
+            type=float,
+            default=0.1,
+            help="Elite rate at the end of the evolution",
+        )
         parser.add_argument(
             "--non_inherit",
             action="store_true",
@@ -104,7 +117,12 @@ class Config(BaseModel):
         )
 
         # PPO params
-        parser.add_argument("--print-en", action="store_true", default=False)
+        parser.add_argument(
+            "--print-en",
+            action="store_true",
+            default=False,
+            help="PPO learning progress be output to the console",
+        )
         parser.add_argument(
             "--algo", default="ppo", help="algorithm to use: a2c | ppo | acktr"
         )
@@ -188,7 +206,12 @@ class Config(BaseModel):
             default=False,
             help="sets flags for determinism when using CUDA (potentially slow!)",
         )
-        parser.add_argument("--max-iters", type=int, default=1000)
+        parser.add_argument(
+            "--max-iters",
+            type=int,
+            default=1000,
+            help="The number of training iterations for PPO",
+        )
         parser.add_argument(
             "--num-processes",
             type=int,
