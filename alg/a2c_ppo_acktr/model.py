@@ -7,6 +7,8 @@ from alg.a2c_ppo_acktr.distributions import (Bernoulli, Categorical,
                                              DiagGaussian)
 from alg.a2c_ppo_acktr.utils import init
 
+# Derived from
+# https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail
 
 class Flatten(nn.Module):
     def forward(self, x):

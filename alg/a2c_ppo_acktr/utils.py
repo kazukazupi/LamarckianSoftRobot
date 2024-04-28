@@ -6,6 +6,8 @@ import torch.nn as nn
 
 from alg.a2c_ppo_acktr.envs import VecNormalize
 
+# Derived from
+# https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail
 
 # Get a render function
 def get_render_func(venv):

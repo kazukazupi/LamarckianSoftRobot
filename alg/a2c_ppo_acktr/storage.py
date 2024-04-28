@@ -1,6 +1,8 @@
 import torch
 from torch.utils.data.sampler import BatchSampler, SubsetRandomSampler
 
+# Derived from
+# https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail
 
 def _flatten_helper(T, N, _tensor):
     return _tensor.view(T * N, *_tensor.size()[2:])
