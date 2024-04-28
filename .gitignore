@@ -1,5 +1,4 @@
 .mypy_cache
-example/*
 result/*
 !result/.gitkeep
 __pycache__

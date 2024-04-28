@@ -47,7 +47,17 @@ python ./example/run.py --max-iters 10 --population-size 5 --max-evaluations 10 
 コマンドライン引数とその意味は[./alg.config.py](./alg/config.py)を参照してください。
 
 ### 中断された実験を再開する
-アクシデントにより実験が途中で中断されてしまった場合、その実験結果を格納するディレクトリを指定することで実験を再開することができます。
+アクシデント等により実験が途中で中断されてしまった場合、その実験結果を格納するディレクトリを指定することで実験を再開することができます。
 ```bash
 python ./example/from_middle.py -e <再開する実験のディレクトリ>
+```
+
+### 条件を変えて実験を行う
+初期世代の学習結果はそのままにして、コントローラーの継承の有無の条件を変更して実験を行いたい時があります。そのようなときには、まずすでに行った実験の初期世代を他の実験ディレクトリにコピーします:
+```bash
+python example/copy_first_generation.py -s ./result/experiment -d ./result/experiment_non_inherit -n
+```
+その上で、新たに誕生した実験ディレクトリの進化を再開します:
+```bash
+python ./example/from_middle.py --exp-dir ./result/experiment_non_inherit
 ```
